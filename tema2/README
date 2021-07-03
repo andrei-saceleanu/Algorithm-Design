@@ -1,0 +1,72 @@
+Tema 2 PA,2020-2021
+Saceleanu Andrei-Iulian,321CB
+
+Problema 1: poduri
+
+Se realizeaza o parcurgere in latime pornind din pozitia de start.
+In functie de tipul celulei,se considera adiacente doar anumite celule
+(V - sus,jos O - stanga,dreapta D- toti vecinii ortogonali . - niciunul).
+In momentul in care se ajunge la o celula de pe marginea matricei(care este
+si de tip V,O sau D),se poate actualiza distanta minima pana la exterior ca
+fiind minimul dintre rezultatul gasit pana in acel moment si 1+(distanta
+celulei curente de pe bordura).Pentru celule de tip V,acest lucru se poate
+realiza daca se afla pe prima/ultima linie,pentru O,pe prima/ultima coloana,
+iar pentru D reuniunea ultimelor doua cazuri ("bordura matricei").
+
+Complexitate temporala: n*m "noduri",O(n*m) muchii,O(V+E) BFS =>
+	- complexitatea temporala este O(n*m)
+Complexitate spatiala auxiliara : O(n*m)
+
+Problema 2 : adrese
+
+Se construieste un graf intre persoanele furnizate la input.Intre 2
+noduri i si j (persoanele de index i si j din vectorul de nume din sursa),
+exista muchie daca persoanele au o adresa de email comuna.Deoarece adresele
+sunt plasata in multimi ordonate,se poate realiza o parcurgere liniara in 
+stilul interclasarii si ,daca valorile din parcurgerile paralele coincid,
+se determina faptul ca intersectia este nevida.
+In graful construit,se realizeaza o parcurgere in adancime.Persoanele din aceeasi
+componenta conexa vor fi unificate intr-una singura(cu numele minim
+lexicografic gasit in acea componenta si cu setul de adrese dat de reuniunea
+seturilor persoanelor din componenta).
+Afisarea se realizeaza crescator dupa dimensiunea seturilor de adrese,apoi
+crescator lexicografic dupa numele persoanei.
+
+Complexitate temporala:O(V+E) DFS,in ipoteza ca E<<V (sunt mult mai multe
+persoane distincte decat cele care ar trebui unificate) =>
+	- complexitatea temporala este O(n)
+Complexitate spatiala auxiliara : O(n*max(k)),max(k)-dimensiunea maxima
+a unui set de adrese din cele citite
+
+
+Problema 3 : lego
+
+Se genereaza toate solutiile(fara duplicate si strict crescatoare) de
+n dimensiuni de piese(cu valoarea maxima k).Pentru fiecare dintre acestea,
+se genereaza un vector binar al numerelor care pot sau nu fi obtinute prin
+imbinarea pieselor si se identifica lungimea maxima a unei subsecvente de 1.
+Pentru crearea acestui vector,se realizeaza un vector de multimi de
+coeficienti care arata de cate ori este folosita o piesa.Fiecare multime
+are lungimea n,iar suma elementelor este nenula(trebuie folosita cel putin
+o piesa) si mai mica sau egala cu t(numarul maxim de piese care pot fi
+utilizate).
+
+Complexitate temporala: O(k^n)
+Complexitate spatiala auxiiara : O(t^n)
+
+Problema 4 : retea
+
+Se simuleaza deconectarea fiecarui nod si se realizeaza cate o parcurgere
+in adancime completa.In fiecare simulare,numarul de mesaje care se pierd
+este (n- numarul de noduri) : n*n - (suma patratelor dimensiunilor
+componentelor conexe gasite = S) .
+Pentru fiecare nod dintr-o componenta de dimensiune k,se pierd n-k mesaje
+care se trimit,in total per componenta fiind k*n-k*k.Sumand pentru toate
+componentele,primul termen devine n*n (suma dimensiunilor componentelor = n)
+iar al doilea termen devine S de mai sus.Mesajele nu se numara de 2 ori
+deoarece se considera,pentru fiecare nod,doar cele care nu pot fi transmise
+(cele care nu pot ajunge la el sunt calculate ca fiind mesaje netransmite de
+alte noduri).
+
+Complexitate temporala: O(n*(n+m)) -daca m<<n,putem considera O(n^2)
+Complexitate spatiala: O(n*m)

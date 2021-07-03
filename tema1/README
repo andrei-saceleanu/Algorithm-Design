@@ -1,0 +1,140 @@
+Tema 1 PA,2020-2021
+Saceleanu Andrei-Iulian,321CB
+
+P1(crypto)
+
+Pentru a afla numarul maxim de criptomonede care pot fi minate,se cauta binar
+,in intervalul posibil al valorilor Pi,valoarea maxima care genereaza un cost
+de upgrade mai mic decat bugetul B.
+Perechile ce descriu calculatoarele se citesc intr-un vector si se sorteaza
+crescator dupa puterea P,astfel incat,in calculul bugetului necesar,se poate
+iesi din bucla in momentul in care puterea calculatorului curent este mai
+mare sau egala decat puterea considerata(cnt).Daca bugetul necesar depaseste
+bugetul maxim,functia de validare iese din bucla si returneaza 0.Daca se iese
+din bucla normal,se verifica conditia ca bugetul necesar sa fie mai mic decat
+cel maxim.
+
+Complexitate:
+Temporala - Se cauta binar pe acelasi interval fixat [0..10^9] => O(1)
+			Functia de validare ruleaza in O(n)
+			Sortarea ruleaza in O(nlogn)
+			Complexitatea finala O(nlogn)
+Spatiala auxiliara - O(1) 
+
+P2(stocks)
+
+Problema este o instanta de Knapsack Problem cu 2 constrangeri:
+-suma valorilor currentValue ale actiunilor alese(greutatea totala) sa nu
+depaseasca bugetul initial B(capacitatea rucsacului) si pierderile maxime 
+cumulate ale acestora (suma de (currentValue-minValue)) sa nu depaseasca L.
+-se doreste maximizarea profitului cumulat de la toate actiunile alese
+(suma de (maxValue-currentValue)).
+Solutiile partiale ale dinamicii se retin intr-un tablou tridimensional,
+subproblema dp[i][j][k] desemnand profitul maxim de la un subset de actiuni
+din cele indexate [0..i-1] cu capacitate maxima j si loss maxim k.Se bordeaza
+matricea cu 0 atunci cand una dintre dimensiuni are index-ul 0.
+Daca currentValue (mat[i-1][0]) depaseste capacitatea j,nu includem
+aceasta actiune (dp[i][j][k] = d[i-1][j][k]).Similar daca actiunea curenta
+are un loss mai mare decat cel maxim k.
+In situatia in care se poate include sau nu actiunea curenta,solutia
+subproblemei este data de maximul dintre solutia in care nu e inclusa actiunea
+dp[i-1][j][k] si cea in care e inclusa,actualizand corespunzator capacitatea
+si loss-ul:
+dp[i][j][k] = fmax(dp[i-1][j][k], profit+dp[i-1][j-mat[i-1][0]][k-loss]);
+
+Complexitate:
+Temporala - O(n*B*L)
+Spatiala auxiliara - provine de la matricea tridimensionala dp O(n*B*L)
+
+P3(valley)
+
+Se utilizeaza o strategie greedy.Se identifica minimul si pozitia acestuia
+in vectorul dat.In partea stanga,se doreste obtinerea unui sir descrescator
+iar in cea dreapta unul crescator.Astfel,la orice abatere de la monotonia
+dorita pe portiunea curenta,se adauga diferenta de inaltime la costul total
+si cel care se abate se aduce la acelasi nivel cu adiacentul sau.
+Daca vectorul intreg de inaltimi este monoton,costul este dat de diferenta
+dintre primele 2 elemente(daca este crescator) sau ultimele 2(descrescator).
+Prefixul va avea 2 elemente si sufixul restul inaltimilor(cazul crescator).
+Sufixul va avea 2 elemente si prefixul restul inaltimilor(cazul descrescator).
+
+Complexitate:
+Temporala - O(n)
+Spatiala auxiliara - O(1)
+
+P4(ridge)
+
+Solutia problemei se construieste prin programare dinamica,subproblema dp[i][j]
+descriind costul minim de a modifica elementul i(sa fie diferit de elementele
+adiacente) utilizand j decrementari.O observatie importanta este ca solutia se
+poate obtine pentru maxim 2 decrementari ale unui element.Oricare alte valori
+mai mari doar ar creste costul.
+Ex:
+2 3 3
+Pentru costuri convenabil alese (elementul din mijloc are cost mult mai mic
+decat ambii vecini),adiacentii vor fi diferiti daca elementul central este
+decrementat de 2 ori si devine 1. 
+Daca elementul i poate fi decrementat de j ori (h[i]-j>=0),solutia subproblemei
+dp[i][j] se compune din costul de a face j decrementari ale elementului i
+(j*c[i]) si din minimul costurilor asociate elementului i-1 (doar cele care
+garanteaza ca adiacentii raman diferiti si ca toate elementele sunt pozitive
+-ex: (h[i-1]-1 >= 0) && (h[i]-j != h[i-1]-1) => se poate considera costul
+dp[i-1][1].Se considera doar vecinul stanga deoarece ,la urmatoarea iteratie,
+se va lua in calcul si cealalta adiacenta a elementului i (i cu i+1).
+Daca elementul i nu poate fi decrementat de j ori(ar deveni negativ),
+dp[i][j] = Infinit (in implementare,ULLONG_MAX).
+Solutia finala este minimul dintre cele 3 valori ale ultimului element:
+(dp[n-1][0],dp[n-1][1],dp[n-1][2]).
+
+Complexitate:
+Temporala - O(n)
+Spatiala auxiliara - O(n)
+
+P5(trigigel)
+
+Se considera 3 siruri a,b,c de lungime n care au urmatoarea semnificatie:
+a[i] = numarul de subsiruri care se termina in 0 ,considerand prefixul de
+		lungime i din sirul construit
+b[i] = numarul de subsiruri care se termina in 1 ,considerand prefixul de
+		lungime i din sirul construit
+c[i] = numarul de subsiruri care se termina in 2 ,considerand prefixul de
+		lungime i din sirul construit
+Pentru a gasi acele subsiruri care sunt si subsecvente,observam ca trebuie ca
+un 1 sa fie precedat de un 0,un 2 de un 1 si un 0 de un 2.Astfel,recurentele
+celor 3 siruri sunt date de:
+a[i] = a[i-1] + c[i-1] + 1 // 1 provine din subsirul singleton {0} de la final
+b[i] = b[i-1] + a[i-1] + 1
+c[i] = c[i-1] + b[i-1] + 1
+Daca starea curenta este vectorul (a[i],b[i],c[i],1),urmatoarea stare se obtine
+prin inmultirea cu una dintre matricile A,B,C (fiecare matricea actualizeaza
+starea sirului cu aceeasi litera mica si le pastreaza identice pe celalalte)
+Ex.Pt matricea B:
+(1 0 0 0)
+(1 1 0 1)
+(0 0 1 0)
+(0 0 0 1)
+Astfel,oricare stare dorita se poate obtine din starea initiala (1,0,0,1) i=1.
+Datorita indexarii,inmultirea se face cu B apoi C si apoi A,repetandu-se
+ciclic.Aceasta noua matrice G = A*C*B se ridica la putere prin exponentiere
+logaritmica cu exponentul (n-1)/3 pentru aflarea starii n.Se mai inmulteste o
+data cu B daca restul (n-1)%3 este 1 si aditional cu C daca restul este 2.
+Matricea finala se inmulteste cu starea initiala (1,0,0,1) iar numarul cautat
+de subsiruri este dat ,deci,de suma elementelor de pe prima si ultima coloana,
+cu exceptia celor de pe ultimul rand.
+
+Complexitate:
+Temporala : O(4^3*log(n)) = O(log(n))
+Spatiala auxiliara: O(4^3) = O(1)
+
+
+
+
+
+
+
+
+
+
+
+
+
